@@ -1,84 +1,75 @@
-// Add query selectors to buttons and display
-
 let nums = document.querySelectorAll(".btn-number")
-
 let ops = document.querySelectorAll(".btn-op")
-
 let btnEqual  = document.querySelector(".btn-equal")
-
 let btnClear = document.querySelector("#clear")
-
 let display = document.querySelector(".display")
-
-
-// Create three variables to store numbers and operators
-
 let num1 = "";
-
 let num2 = "";
-
 let operator = "";
-
 let result = 0;
-
 let isResultDisplayed = false;
 
-// Add event listeners to buttons
-
-nums.forEach(function(btn) {
-    btn.addEventListener("click", function(e) {
-        if (!operator) {
-            if (isResultDisplayed) {
-                num1 = e.target.innerHTML;
-                isResultDisplayed = false;
-            }
-            else num1 += e.target.innerHTML;
-            display.textContent = num1;
+function setNumsByClick(e) {
+    if (!operator) {
+        if (isResultDisplayed) {
+            num1 = e.target.innerHTML;
+            isResultDisplayed = false;
         }
-        else {
-            num2 += e.target.innerHTML;
-            display.textContent = `${num1} ${operator} ${num2}`
-        }
-    })
-})
-
-document.addEventListener("keydown", function(e) {
-    console.log(e);
-    if (Number(+e.key)) {
-        if (!operator) {
-            if (isResultDisplayed) {
-                num1 = e.key;
-                isResultDisplayed = false;
-            }
-            else num1 += e.key;
-            display.textContent = num1;
-        }
-        else {
-            num2 += e.key;
-            display.textContent = `${num1} ${operator} ${num2}`
-        }
+        else num1 += e.target.innerHTML;
+        display.textContent = num1;
     }
-    else if (e.key == "+" || e.key == "-" || e.key == "x" || e.key == "/") {
-        operator = e.key;
-        num2 = "";
-        display.textContent = `${num1} ${operator}`
+    else {
+        num2 += e.target.innerHTML;
+        display.textContent = `${num1} ${operator} ${num2}`
     }
+    document.activeElement.blur()
+}
 
-    else if (e.key == "Enter") {
+
+function setOperatorByClick(e) {
+    if (!num1) return;
+    if (num2) getResult()
+    operator = e.target.innerHTML;
+    display.textContent = `${num1} ${operator}`;
+    document.activeElement.blur()
+}
+
+
+function operateKeyInput(e) {
+    if (e.key == " ") return;
+     else if (!isNaN(+e.key)) setNumsByKey(e)
+     else if (e.key == "+" || e.key == "-" || e.key == "x" || e.key == "/") setOperatorByKey(e)
+     else if (e.key == "Enter") {
         getResult();
+     }
+     else if (e.key == "Escape") clear();
+ }
+
+
+function setNumsByKey(e) {
+    if (!operator) {
+        if (isResultDisplayed) {
+            num1 = e.key;
+            isResultDisplayed = false;
+        }
+        else num1 += e.key;
+        display.textContent = num1;
     }
-})
+    else {
+        num2 += e.key;
+        display.textContent = `${num1} ${operator} ${num2}`
+    }
+}
 
-ops.forEach(function(btn) {
-    btn.addEventListener("click", function(e) {
-        operator = e.target.innerHTML;
-        num2 = "";
-        display.textContent = `${num1} ${operator}`
-    })
-})
+function setOperatorByKey(e) {
+    if (!num1) return;
+    if (num2) getResult()
+    operator = e.key;
+    display.textContent = `${num1} ${operator}`
+}
 
-btnEqual.addEventListener("click", function() {
-    if (!operator) return;
+function getResult() {
+    if (!num2) return;
     else if (operator == "+") {
         result = +num1 + +num2;
     }
@@ -97,22 +88,20 @@ btnEqual.addEventListener("click", function() {
     operator = "";
     result = 0;
     isResultDisplayed = true;
-})
+}
 
-btnClear.addEventListener("click", function() {
+
+
+function clear() {
     num1 = "";
     num2 = "";
     operator = "";
     result = 0;
     display.textContent = " ";
-})
+}
 
-// If both numVariables are empty, store number in first one and print it to display
-
-// If another number is pressed, append it, until operator is pressed
-
-// Store operator in opVariable and print it to display
-
-// Store numbers in second numVariable
-
-// If equal sign is pressed, do the operation and replace content of display with result
+nums.forEach(btn => btn.addEventListener("click", setNumsByClick))
+ops.forEach(btn => btn.addEventListener("click", setOperatorByClick))
+btnEqual.addEventListener("click", getResult)
+btnClear.addEventListener("click", clear)
+document.addEventListener("keydown", operateKeyInput)
