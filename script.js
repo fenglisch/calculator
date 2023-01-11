@@ -25,7 +25,6 @@ function setNumsByClick(e) {
     document.activeElement.blur()
 }
 
-
 function setOperatorByClick(e) {
     if (!num1) return;
     if (num2) getResult()
@@ -33,7 +32,6 @@ function setOperatorByClick(e) {
     display.textContent = `${num1} ${operator}`;
     document.activeElement.blur()
 }
-
 
 function operateKeyInput(e) {
     if (e.key == " ") return;
@@ -44,7 +42,6 @@ function operateKeyInput(e) {
      }
      else if (e.key == "Escape") clear();
  }
-
 
 function setNumsByKey(e) {
     if (!operator) {
@@ -70,6 +67,15 @@ function setOperatorByKey(e) {
 
 function getResult() {
     if (!num2) return;
+    else if (operator == "/" && +num2 == 0) {
+        display.textContent = "Computer says no!"
+        num1 = "";
+        num2 = "";
+        operator = "";
+        result = 0;
+        isResultDisplayed = true;
+        return
+    }
     else if (operator == "+") {
         result = +num1 + +num2;
     }
@@ -82,15 +88,13 @@ function getResult() {
     else if (operator == "/") {
         result = +num1 / +num2;
     }
-    display.textContent = `${num1} ${operator} ${num2} = ${result}`;
+    display.textContent = `${num1} ${operator} ${num2} = ${Math.round(result * 100)/100}`;
     num1 = result;
     num2 = "";
     operator = "";
     result = 0;
     isResultDisplayed = true;
 }
-
-
 
 function clear() {
     num1 = "";

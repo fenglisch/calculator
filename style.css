@@ -2,10 +2,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 5px;
     transition: all 0.5s;
 }
 
+.rounded *, .rounded {
+    border-radius: 10px;
+}
 
 .container {
     width: 500px;
